@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start-dev": "nodemon server/index.js",
-		"test": "mocha ./server/tests/index.js"
+    "test": "mocha ./server/tests/index.js"
   },
   "author": "Benjamin Bledsoe <bledsoedesigns@gmail.com>",
   "license": "MIT",
