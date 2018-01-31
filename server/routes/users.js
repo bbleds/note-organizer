@@ -8,7 +8,7 @@ module.exports = (app, knex) => {
 	app.get('/api/users', async (req, res) => {
 		
 		const authorization = authorizeRequest(req)
-		if(authorization.error) return res.send(standardRes([], authorization.msg, true))
+		if(authorization.error) return res.status(401).send(standardRes([], authorization.msg, true))
 		
 		try{	
 			const users = await knex.select().from('users')
