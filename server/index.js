@@ -4,7 +4,7 @@ const PORT = process.env.PORT || 4000
 const app = express()
 const R = require('ramda')
 const knex = require('./db/knex.js')
-const { standardRes } = require('../utils/utility')
+const { standardRes, trimValue } = require('../utils/utility')
 
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({extended: false}))
@@ -40,17 +40,17 @@ app.post('/users/:id', async (req, res) => {
 	const { body } = req
 	const { id } = req.params
 	
-	if(!Object.keys(body).length) return res.send(standardRes([], `You must specify at least one user property to update`, true))
+	if (R.isEmpty(body)) return res.send(standardRes([], `You must specify at least one user property to update`, true))
 	
-	const allowedProperties = ['first_name', 'last_name', 'email']
-	let data = {}
+	const allowedProperties = ['first_name', 'last_name']
 	
-	Object.keys(body).map( key => {	if (allowedProperties.includes(key) && body[key].trim()) data[key] = body[key] })
+  // filter by allowedProperties and trim each value
+	let data = R.map(trimValue, R.pickBy( (v,k) => (v.trim() && R.contains(k, allowedProperties)), body))
 	
-	if(!Object.keys(data).length) return res.send(standardRes([], 'An error occurred: there were no valid user values provided. Please check your values and try again', true))
+	if(R.isEmpty(data)) return res.send(standardRes([], 'An error occurred: there were no valid user values provided. Please check your values and try again', true))
 	
 	try {
-		const updatedUser = await knex.update(data).into('users').where('id','=',id)
+		await knex('users').update(data).where('id','=',id)
 		res.send(standardRes(data, 'User updated successfully. NOTE - some properties may have been removed if invalid keys were specified'))	
 	} catch(err) {
 		res.send(standardRes([], `An error occurred when updating this user : ${err}`, true))

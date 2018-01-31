@@ -6,6 +6,9 @@ module.exports = {
 		error, 
 		msg, 
 		data: Array.isArray(data) ? data : [data] 
-	})
+	}),
+	
+	// returns a trimmed verson of a value -- should be used on strings
+	trimValue : v => v.trim()
 	
 }
