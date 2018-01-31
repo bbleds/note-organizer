@@ -5,9 +5,9 @@ exports.seed = (knex, Promise) => {
     .then(() => {
       // Inserts seed entries
       return knex('users').insert([
-        {id: 1, name: 'bob', email: 'bob@bob.com'},
-        {id: 2, name: 'bill', email: 'bill@bob.com'},
-        {id: 3, name: 'sarah', email: 'sarah@bob.com'}
-      ]);
-    });
-};
+        {id: 1, first_name: 'bob', last_name: 'user', email: 'bob@example.com'},
+        {id: 2, first_name: 'sarah', last_name: 'user', email: 'sarah@example.com'},
+        {id: 3, first_name: 'bill', last_name: 'user', email: 'bill@example.com'}
+      ])
+    })
+}
