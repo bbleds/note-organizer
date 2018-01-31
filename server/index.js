@@ -4,7 +4,7 @@ const PORT = process.env.PORT || 4000
 const app = express()
 const R = require('ramda')
 const knex = require('./db/knex.js')
-const { standardRes, trimValue } = require('../utils/utility')
+const { standardRes, trimValue, validateUserData } = require('../utils/utility')
 
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({extended: false}))
@@ -42,10 +42,8 @@ app.post('/users/:id', async (req, res) => {
 	
 	if (R.isEmpty(body)) return res.send(standardRes([], `You must specify at least one user property to update`, true))
 	
-	const allowedProperties = ['first_name', 'last_name']
-	
-  // filter by allowedProperties and trim each value
-	let data = R.map(trimValue, R.pickBy( (v,k) => (v.trim() && R.contains(k, allowedProperties)), body))
+  // validate key/value and trim each applicable value
+	const data = R.map(trimValue, R.pickBy(validateUserData, body))
 	
 	if(R.isEmpty(data)) return res.send(standardRes([], 'An error occurred: there were no valid user values provided. Please check your values and try again', true))
 	
