@@ -24,7 +24,7 @@ module.exports = (app, knex) => {
 		try{
 			const { id } = req.params
 			const user = await knex.select().from('users').where('id','=',id)
-			user.length ? res.send(standardRes(user))	: res.send(standardRes([], `An error occurred when retrieving this user : User with id ${id} does not exist`, true))
+			user.length ? res.send(standardRes(user))	: res.send(standardRes([], `An error occurred when retrieving this user : User with id: ${id} does not exist`, true))
 		} catch(err){
 			res.send(standardRes([], `An error occurred when retrieving this user : ${err}`, true))
 		}
@@ -37,10 +37,10 @@ module.exports = (app, knex) => {
 		const { body } = req
 		const { id } = req.params
 		
-		if (R.isEmpty(body)) return res.send(standardRes([], 'You must specify at least one user property to update', true))
+		if (R.isEmpty(body)) return res.send(standardRes([], 'An error occurred when retrieving this user : You must specify at least one user property to update', true))
 		
 		const user = await knex.select().from('users').where('id','=',id)
-		if (!user.length) return res.send(standardRes([], `No user exists with id: ${id}`, true))
+		if (!user.length) return res.send(standardRes([], `An error occurred when retrieving this user : User with id: ${id} does not exist`, true))
 		
 	  // validate key/value and trim each applicable value
 		const data = R.map(trimValue, R.pickBy(validateUserData, body))
