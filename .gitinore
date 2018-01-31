@@ -1,5 +1,0 @@
-# do not track config files
-./config.js
-
-# do not track node modules
-/node_modules
