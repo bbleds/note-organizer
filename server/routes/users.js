@@ -7,7 +7,7 @@ module.exports = (app, knex) => {
 	// get all users
 	app.get('/api/users', async (req, res) => {
 		
-		if(req.headers.authorization !== ADMIN_SECRET_KEY) return res.send(standardRes([], 'You are not authorized to view this resource', true))
+		if(req.headers.authorization !== ADMIN_SECRET_KEY) return res.send(standardRes([], 'You do not have access to perform this action', true))
 		
 		try{	
 			const users = await knex.select().from('users')
@@ -56,5 +56,23 @@ module.exports = (app, knex) => {
 
 	})
 	
+	// edit 
+	app.delete('/api/users/:id', async (req, res) => {
+		
+		if(req.headers.authorization !== ADMIN_SECRET_KEY) return res.send(standardRes([], 'You do not have access to perform this action', true))
+		
+		const { id } = req.params
+		
+		const user = await knex.select().from('users').where('id','=',id)
+		if (!user.length) return res.send(standardRes([], `No user exists with id: ${id}`, true))
+		
+		try {
+			await knex('users').where('id','=',id).del()
+			res.send(standardRes({}, `Successfully deleted user with id: ${id}`))	
+		} catch(err) {
+			res.send(standardRes([], `An error occurred when deleting this user : ${err}`, true))
+		}	
+
+	})
 	
 }
