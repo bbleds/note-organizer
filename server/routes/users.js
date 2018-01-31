@@ -1,5 +1,5 @@
 const { standardRes, trimValue, validateUserData } = require('../../utils/utility')
-const { ADMIN_SECRET_KEY } = require('../../config')
+const { authorizeRequest } = require('../../utils/utility')
 const R = require('ramda')
 
 module.exports = (app, knex) => {
@@ -7,7 +7,8 @@ module.exports = (app, knex) => {
 	// get all users
 	app.get('/api/users', async (req, res) => {
 		
-		if(req.headers.authorization !== ADMIN_SECRET_KEY) return res.send(standardRes([], 'You do not have access to perform this action', true))
+		const authorization = authorizeRequest(req)
+		if(authorization.error) return res.send(standardRes([], authorization.msg, true))
 		
 		try{	
 			const users = await knex.select().from('users')
@@ -59,7 +60,8 @@ module.exports = (app, knex) => {
 	// edit 
 	app.delete('/api/users/:id', async (req, res) => {
 		
-		if(req.headers.authorization !== ADMIN_SECRET_KEY) return res.send(standardRes([], 'You do not have access to perform this action', true))
+		const authorization = authorizeRequest(req)
+		if(authorization.error) return res.send(standardRes([], authorization.msg, true))
 		
 		const { id } = req.params
 		

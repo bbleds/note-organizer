@@ -1,5 +1,6 @@
 const R = require('ramda')
 const { editableUserProperties } = require('../constants/user')
+const { ADMIN_SECRET_KEY } = require('../config')
 
 // contains utility methods for general usage
 module.exports = {
@@ -14,6 +15,12 @@ module.exports = {
 	// returns a trimmed verson of a value -- should be used on strings
 	trimValue : v => v.trim(),
 	
-	validateUserData : (v, k) => (typeof v === 'string' && v.trim() && R.contains(k, editableUserProperties))
+  // this is a comparison function used to check that value "v" on object with key "k" is not empty and is a string, and that key "k" is a valid key existing in some array "editableUserProperties"
+	validateUserData : (v, k) => (typeof v === 'string' && v.trim() && R.contains(k, editableUserProperties)),
 	
+	// checks headers to validate a request
+	authorizeRequest : req => (req.headers.authorization === ADMIN_SECRET_KEY ? 
+		module.exports.standardRes() :
+		module.exports.standardRes([], 'You do not have permission to perform this action', true) 
+	)
 }

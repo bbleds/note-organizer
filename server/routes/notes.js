@@ -1,12 +1,13 @@
 const { standardRes, trimValue, validateUserData } = require('../../utils/utility')
-const { ADMIN_SECRET_KEY } = require('../../config')
+const { authorizeRequest } = require('../../utils/utility')
 const R = require('ramda')
 
 module.exports = (app, knex) => {
 
 	app.get('/api/notes', async (req, res) => {
 		
-		if(req.headers.authorization !== ADMIN_SECRET_KEY) return res.send(standardRes([], 'You do not have access to perform this action', true))
+		const authorization = authorizeRequest(req)
+		if(authorization.error) return res.send(standardRes([], authorization.msg, true))
 		
 		try{	
 			const notes = await knex.select().from('notes')
