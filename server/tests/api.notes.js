@@ -12,7 +12,7 @@ describe('/api/notes endpoints', () => {
 	const noteCreation = new Promise((resolve, reject) => {
 		// create new note
 		describe('POST /api/users/:id/notes - New Note Creation', () => {
-			it('Should not create a new note if invalid credentials are passed in', done => {
+			it('should not create a new note if invalid credentials are passed in', done => {
 				chai.request('http://localhost:4000')
 				.post('/api/users/1/notes')
 				.set('authorization', 'testing')
@@ -22,7 +22,7 @@ describe('/api/notes endpoints', () => {
 					done()
 				})
 			})
-			it('Should not create a new note if required note properties are missing', done => {
+			it('should not create a new note if required note properties are missing', done => {
 				chai.request('http://localhost:4000')
 				.post('/api/users/1/notes')
 				.set('authorization', ADMIN_SECRET_KEY)
@@ -32,7 +32,7 @@ describe('/api/notes endpoints', () => {
 					done()
 				})
 			})
-			it('Should create a new note under a user when valid credentials are passed in and required fields are passed in', done => {
+			it('should create a new note under a user when valid credentials are passed in and required fields are passed in', done => {
 				chai.request('http://localhost:4000')
 				.post('/api/users/1/notes')
 				.set('authorization', ADMIN_SECRET_KEY)
@@ -55,7 +55,7 @@ describe('/api/notes endpoints', () => {
 		
 		// get all notes
 		describe('GET /api/notes - Get All Notes', () => {
-			it('Should not get notes when invalid credentials are passed in', done => {
+			it('should not get notes when invalid credentials are passed in', done => {
 				chai.request('http://localhost:4000')
 				.get('/api/notes')
 				.set('authorization', 'testing')
@@ -64,7 +64,7 @@ describe('/api/notes endpoints', () => {
 					done()
 				})
 			})
-			it('Should not get notes when no credentials are passed in', done => {
+			it('should not get notes when no credentials are passed in', done => {
 				chai.request('http://localhost:4000')
 				.get('/api/notes')
 				.end((err, res) => {
@@ -72,7 +72,7 @@ describe('/api/notes endpoints', () => {
 					done()
 				})
 			})
-			it('Should get all notes when valid credentials are passed in', done => {
+			it('should get all notes when valid credentials are passed in', done => {
 				chai.request('http://localhost:4000')
 				.get('/api/notes')
 				.set('authorization', ADMIN_SECRET_KEY)
@@ -85,7 +85,16 @@ describe('/api/notes endpoints', () => {
 		
 		// get note
 		describe('GET /api/users/:userId/notes/:noteId - Get Single Note', () => {
-			it('Should retrieve a single note when valid credentials are passed in', done => {
+			it('should not retrieve a single note when invalid credentials are passed in', done => {
+				chai.request('http://localhost:4000')
+				.get(`/api/users/1/notes/${newNoteId}`)
+				.set('authorization', 'testing')
+				.end((err, res) => {
+					expect(res.body.error).to.equal(true)
+					done()
+				})
+			})
+			it('should retrieve a single note when valid credentials are passed in', done => {
 				chai.request('http://localhost:4000')
 				.get(`/api/users/1/notes/${newNoteId}`)
 				.set('authorization', ADMIN_SECRET_KEY)
@@ -99,7 +108,7 @@ describe('/api/notes endpoints', () => {
 		
 		// edit note
 		describe('POST /api/users/:id/notes/noteId - Edit Note', () => {
-			it('Should not edit a note when invalid credentials are passed in', done => {
+			it('should not edit a note when invalid credentials are passed in', done => {
 				chai.request('http://localhost:4000')
 				.post(`/api/users/1/notes/${newNoteId}`)
 				.set('authorization', 'testing')
@@ -109,7 +118,7 @@ describe('/api/notes endpoints', () => {
 					done()
 				})
 			})
-			it('Should not edit a note when no properties are specified', done => {
+			it('should not edit a note when no properties are specified', done => {
 				chai.request('http://localhost:4000')
 				.post(`/api/users/1/notes/${newNoteId}`)
 				.set('authorization', ADMIN_SECRET_KEY)
@@ -118,7 +127,7 @@ describe('/api/notes endpoints', () => {
 					done()
 				})
 			})
-			it('Should edit a note when valid credentials and note properties are passed in', done => {
+			it('should edit a note when valid credentials and note properties are passed in', done => {
 				chai.request('http://localhost:4000')
 				.post(`/api/users/1/notes/${newNoteId}`)
 				.set('authorization', ADMIN_SECRET_KEY)
@@ -128,11 +137,51 @@ describe('/api/notes endpoints', () => {
 					done()
 				})
 			})
-			it('Should edit a note when valid credentials and at least one note property are passed in', done => {
+			it('should edit a note when valid credentials and at least one note property are passed in', done => {
 				chai.request('http://localhost:4000')
 				.post(`/api/users/1/notes/${newNoteId}`)
 				.set('authorization', ADMIN_SECRET_KEY)
 				.send({'title':'testing title final'})
+				.end((err, res) => {
+					expect(res.body.error).to.equal(false)
+					done()
+				})
+			})
+		})
+		
+		// delete note
+		describe('DELETE /api/users/:userId/notes/:noteId - Delete Single Note', () => {
+			it('should not delete a note when invalid credentials are passed in', done => {
+				chai.request('http://localhost:4000')
+				.delete(`/api/users/1/notes/${newNoteId}`)
+				.set('authorization', 'testing')
+				.end((err, res) => {
+					expect(res.body.error).to.equal(true)
+					done()
+				})
+			})
+			it('should not delete a note when the note does not exist on a particular user', done => {
+				chai.request('http://localhost:4000')
+				.delete(`/api/users/999999999999999999/notes/${newNoteId}`)
+				.set('authorization', ADMIN_SECRET_KEY)
+				.end((err, res) => {
+					expect(res.body.error).to.equal(true)
+					done()
+				})
+			})
+			it('should return an error when the note id does not exist', done => {
+				chai.request('http://localhost:4000')
+				.delete(`/api/users/1/notes/999999999999999999999999999999999999`)
+				.set('authorization', ADMIN_SECRET_KEY)
+				.end((err, res) => {
+					expect(res.body.error).to.equal(true)
+					done()
+				})
+			})
+			it('should delete a note when valid credentials are passed in', done => {
+				chai.request('http://localhost:4000')
+				.delete(`/api/users/1/notes/${newNoteId}`)
+				.set('authorization', ADMIN_SECRET_KEY)
 				.end((err, res) => {
 					expect(res.body.error).to.equal(false)
 					done()

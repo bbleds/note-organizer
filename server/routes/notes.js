@@ -35,7 +35,8 @@ module.exports = (app, knex) => {
 		}
 		
 		try{	
-			const note = await knex('notes').select().where('id','=',noteId)
+			const note = await knex('notes').select().where({id: noteId, user_id: userId})
+			if(!note.length) return res.send(standardRes([], `An error occurred when retrieving this note: a note with id ${id} on user with id ${userId} does not exist`, true))
 			res.send(standardRes(note))
 		} catch(err){
 			res.send(standardRes([], `An error occurred when retrieving a note: ${err}`, true))
@@ -81,6 +82,13 @@ module.exports = (app, knex) => {
 			if(authorization.error) return res.status(401).send(standardRes([], authorization.msg, true))
 		}
 		
+		try{	
+			const note = await knex('notes').select().where({id: noteId, user_id: userId})
+			if(!note.length) return res.send(standardRes([], `An error occurred when editing a note: a note with the id ${noteId} on user with id :${userId} does not exist`, true))
+		} catch(err){
+			res.send(standardRes([], `An error occurred when editing a note: ${err}`, true))
+		}
+		
 		if (R.isEmpty(body)) return res.send(standardRes([], 'An error occurred when editing a note : You must specify all required properties', true)) 
 		
 		// validate key/value and trim each applicable value
@@ -95,6 +103,31 @@ module.exports = (app, knex) => {
 			res.send(standardRes(data))
 		} catch(err){
 			res.send(standardRes([], `An error occurred when editing a note: ${err}`, true))
+		}
+	})
+	
+	// delete a note
+	app.delete('/api/users/:userId/notes/:noteId', async (req, res) => {
+		const { userId, noteId } = req.params
+		const { body } = req
+		
+		if(req.user === undefined || req.user.id != userId){
+			const authorization = authorizeRequest(req)
+			if(authorization.error) return res.status(401).send(standardRes([], authorization.msg, true))
+		}
+		
+		try{
+			const note = await knex('notes').select().where({id: noteId, user_id: userId})
+			if(!note.length) return res.send(standardRes([], `An error occurred when deleting a note: no notes exist with the id ${noteId} belonging to user with id ${userId}`, true))
+		} catch(err){
+			return res.send(standardRes([], `An error occurred when deleting a note: ${err}`, true))
+		}
+		
+		try{	
+			const delRes = await knex('notes').where('id','=',noteId).del()
+			res.send(standardRes({success:delRes}))
+		} catch(err){
+			res.send(standardRes([], `An error occurred when deleting a note: ${err}`, true))
 		}
 	})
 
