@@ -1,3 +1,4 @@
 module.exports = {
-	editableUserProperties : ['first_name', 'last_name']
+	editableUserProperties : ['first_name', 'last_name'],
+	requiredUserProperties : ['first_name', 'last_name', 'email']
 }
