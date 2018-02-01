@@ -127,6 +127,15 @@ describe('/api/notes endpoints', () => {
 					done()
 				})
 			})
+			it('should not edit a note when invalid user and note ids are specified', done => {
+				chai.request('http://localhost:4000')
+				.post(`/api/users/99999999999999/notes/999999999999999999`)
+				.set('authorization', ADMIN_SECRET_KEY)
+				.end((err, res) => {
+					expect(res.body.error).to.equal(true)
+					done()
+				})
+			})
 			it('should edit a note when valid credentials and note properties are passed in', done => {
 				chai.request('http://localhost:4000')
 				.post(`/api/users/1/notes/${newNoteId}`)
