@@ -7,10 +7,10 @@ const { ADMIN_SECRET_KEY } = require('../../config')
 chai.use(chaiHttp)
 
 describe('/api/users endpoints', () => {
-		
+
 	// create a promise for creating a new user
 	const userCreation = new Promise((resolve, reject) => {
-		
+
 		// Test creation of new user
 		describe('POST /users - New User Creation', () => {
 			it('should not create a new user if invalid credentials are specified', done => {
@@ -49,10 +49,10 @@ describe('/api/users endpoints', () => {
 			})
 		})
 	})
-		
+
 	userCreation
 	.then((newUserId)=>{
-		
+
 		// test general listing of all users
 	  describe('GET /users - Get Users', () => {
 	      it('should not retrieve users if authorization header does not exist', done => {
@@ -83,7 +83,7 @@ describe('/api/users endpoints', () => {
 					})
 				})
 	  })
-		
+
 		// test general listing of one user
 		describe('GET /users/:id - Get Single User', () => {
 				it('should not retrieve user if invalid id is passed in', done => {
@@ -123,7 +123,7 @@ describe('/api/users endpoints', () => {
 					})
 				})
 		})
-		
+
 		// test ability to edit a user
 		describe('POST /users/:id - Edit User', () => {
 			const firstName = 'testing_from_tests'+Date.now().toString()
@@ -170,7 +170,7 @@ describe('/api/users endpoints', () => {
 					})
 				})
 		})
-		
+
 		// test ability to edit a user
 		describe('DELETE /users/:id - Delete User', () => {
 				it('should not delete user if invalid id is passed in', done => {
