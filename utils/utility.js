@@ -3,6 +3,10 @@ const {
 	editableUserProperties, 
 	requiredUserProperties 
 } = require('../constants/user')
+const { 
+	editableNoteProperties, 
+	requiredNoteProperties 
+} = require('../constants/notes')
 const { ADMIN_SECRET_KEY } = require('../config')
 
 // contains utility methods for general usage
@@ -22,6 +26,8 @@ module.exports = {
 	validateEditableUserData : (v, k) => (typeof v === 'string' && v.trim() && R.contains(k, editableUserProperties)),
 	
 	validateRequiredUserData : (v, k) => (typeof v === 'string' && v.trim() && R.contains(k, requiredUserProperties)),
+	
+	validateRequiredNoteData : (v, k) => (typeof v === 'string' && v.trim() && (R.contains(k, requiredNoteProperties) || R.contains(k, editableNoteProperties))),
 	
 	// checks headers to validate a request
 	authorizeRequest : req => (req.headers.authorization === ADMIN_SECRET_KEY ? 

@@ -39,7 +39,7 @@ module.exports = (app, knex) => {
 		const data = R.map(trimValue, R.pickBy(validateRequiredUserData, body))
 		
     // be sure we have the exact keys that are required
-		if(R.isEmpty(data) || !R.equals(Object.keys(data).sort(), requiredUserProperties.sort())) return res.send(standardRes([], 'An error occurred when creating this user : You must specify all required user properties', true))
+		if(R.isEmpty(data)) return res.send(standardRes([], 'An error occurred when creating this user : You must specify all required user properties', true))
 
 		try{	
 			const existingUser = await knex('users').select().where('email','=',data.email)
