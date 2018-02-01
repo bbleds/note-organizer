@@ -1,6 +1,9 @@
-const { standardRes, trimValue, validateUserData } = require('../../utils/utility')
-const { authorizeRequest } = require('../../utils/utility')
 const R = require('ramda')
+const { 
+	authorizeRequest, 
+	standardRes, 
+	trimValue
+} = require('../../utils/utility')
 
 module.exports = (app, knex) => {
 

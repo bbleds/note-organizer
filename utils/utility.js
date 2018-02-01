@@ -1,5 +1,8 @@
 const R = require('ramda')
-const { editableUserProperties, requiredUserProperties } = require('../constants/user')
+const { 
+	editableUserProperties, 
+	requiredUserProperties 
+} = require('../constants/user')
 const { ADMIN_SECRET_KEY } = require('../config')
 
 // contains utility methods for general usage

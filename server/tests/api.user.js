@@ -12,7 +12,7 @@ describe('/api/users endpoints', () => {
 	const userCreation = new Promise((resolve, reject) => {
 		// Test creation of new user
 		describe('POST /users', () => {
-			it('should not create a new user if invalid credentials are specified', (done) => {
+			it('should not create a new user if invalid credentials are specified', done => {
 				chai.request('http://localhost:4000')
 				.post('/api/users')
 				.set('authorization', 'testing')
@@ -21,7 +21,7 @@ describe('/api/users endpoints', () => {
 					done()
 				})
 			})
-			it('should not create a new user if invalid properties specified', (done) => {
+			it('should not create a new user if invalid properties specified', done => {
 				chai.request('http://localhost:4000')
 				.post('/api/users')
 				.set('authorization', ADMIN_SECRET_KEY)
@@ -31,7 +31,7 @@ describe('/api/users endpoints', () => {
 					done()
 				})
 			})
-			it('should create a new user if all properties and credentials are valid', (done) => {
+			it('should create a new user if all properties and credentials are valid', done => {
 				chai.request('http://localhost:4000')
 				.post('/api/users')
 				.set('authorization', ADMIN_SECRET_KEY)
@@ -54,7 +54,7 @@ describe('/api/users endpoints', () => {
 		
 		// test general listing of all users
 	  describe('GET /users', () => {
-	      it('should not retrieve users if authorization header does not exist', (done) => {
+	      it('should not retrieve users if authorization header does not exist', done => {
 					chai.request('http://localhost:4000')
 				  .get('/api/users')
 				  .end((err, res) => {
@@ -62,7 +62,7 @@ describe('/api/users endpoints', () => {
 				    done()
 				  })
 	      })
-				it('should not retrieve users if authorization header is incorrect', (done) => {
+				it('should not retrieve users if authorization header is incorrect', done => {
 					chai.request('http://localhost:4000')
 					.get('/api/users')
 					.set('authorization', 'foobar')
@@ -72,7 +72,7 @@ describe('/api/users endpoints', () => {
 						done()
 					})
 				})
-				it('should retrieve users if authorization header is correct', (done) => {
+				it('should retrieve users if authorization header is correct', done => {
 					chai.request('http://localhost:4000')
 					.get('/api/users')
 					.set('authorization', ADMIN_SECRET_KEY)
@@ -85,7 +85,7 @@ describe('/api/users endpoints', () => {
 		
 		// test general listing of one user
 		describe('GET /users/:id', () => {
-				it('should not retrieve user if invalid id is passed in', (done) => {
+				it('should not retrieve user if invalid id is passed in', done => {
 					chai.request('http://localhost:4000')
 					.get('/api/users/someInvalidId')
 					.set('authorization', ADMIN_SECRET_KEY)
@@ -94,7 +94,7 @@ describe('/api/users endpoints', () => {
 						done()
 					})
 				})
-				it('should not retrieve user if no user exists with specified id', (done) => {
+				it('should not retrieve user if no user exists with specified id', done => {
 					chai.request('http://localhost:4000')
 					.get('/api/users/9999999999')
 					.set('authorization', ADMIN_SECRET_KEY)
@@ -103,7 +103,7 @@ describe('/api/users endpoints', () => {
 						done()
 					})
 				})
-				it('should not retrieve user if no valid credentials are passed in', (done) => {
+				it('should not retrieve user if no valid credentials are passed in', done => {
 					chai.request('http://localhost:4000')
 					.get('/api/users/1')
 					.end((err, res) => {
@@ -111,7 +111,7 @@ describe('/api/users endpoints', () => {
 						done()
 					})
 				})
-				it('should retrieve user if valid id is specified', (done) => {
+				it('should retrieve user if valid id and credentials are specified', done => {
 					chai.request('http://localhost:4000')
 					.get(`/api/users/${newUserId}`)
 					.set('authorization', ADMIN_SECRET_KEY)
@@ -126,7 +126,7 @@ describe('/api/users endpoints', () => {
 		// test ability to edit a user
 		describe('POST /users/:id', () => {
 			const firstName = 'testing_from_tests'+Date.now().toString()
-				it('should not update user if invalid id is passed in', (done) => {
+				it('should not update user if invalid id is passed in', done => {
 					chai.request('http://localhost:4000')
 					.post('/api/users/someInvalidId')
 					.set('authorization', ADMIN_SECRET_KEY)
@@ -136,7 +136,7 @@ describe('/api/users endpoints', () => {
 						done()
 					})
 				})
-				it('should not update user if no user exists with specified id', (done) => {
+				it('should not update user if no user exists with specified id', done => {
 					chai.request('http://localhost:4000')
 					.post('/api/users/88888888888')
 					.set('authorization', ADMIN_SECRET_KEY)
@@ -146,7 +146,7 @@ describe('/api/users endpoints', () => {
 						done()
 					})
 				})
-				it('should not update user if invalid credentials are provided', (done) => {
+				it('should not update user if invalid credentials are provided', done => {
 					chai.request('http://localhost:4000')
 					.post('/api/users/1')
 					.set('authorization', 'testing')
@@ -156,7 +156,7 @@ describe('/api/users endpoints', () => {
 						done()
 					})
 				})
-				it('should update user if valid id is specified and valid credentials are passed', (done) => {
+				it('should update user if valid id is specified and valid credentials are passed', done => {
 					chai.request('http://localhost:4000')
 					.post(`/api/users/${newUserId}`)
 					.set('content-type', 'application/x-www-form-urlencoded')
@@ -172,7 +172,7 @@ describe('/api/users endpoints', () => {
 		
 		// test ability to edit a user
 		describe('DELETE /users/:id', () => {
-				it('should not delete user if invalid id is passed in', (done) => {
+				it('should not delete user if invalid id is passed in', done => {
 					chai.request('http://localhost:4000')
 					.delete('/api/users/someInvalidId')
 					.set('authorization', ADMIN_SECRET_KEY)
@@ -181,7 +181,7 @@ describe('/api/users endpoints', () => {
 						done()
 					})
 				})
-				it('should not delete user if no user exists with specified id', (done) => {
+				it('should not delete user if no user exists with specified id', done => {
 					chai.request('http://localhost:4000')
 					.delete('/api/users/88888888888')
 					.set('authorization', ADMIN_SECRET_KEY)
@@ -190,7 +190,7 @@ describe('/api/users endpoints', () => {
 						done()
 					})
 				})
-				it('should not delete user if invalid credentials are provided', (done) => {
+				it('should not delete user if invalid credentials are provided', done => {
 					chai.request('http://localhost:4000')
 					.delete('/api/users/1')
 					.set('authorization', 'testing')
@@ -199,7 +199,7 @@ describe('/api/users endpoints', () => {
 						done()
 					})
 				})
-				it('should delete user if valid id is specified and valid credentials are passed', (done) => {
+				it('should delete user if valid id is specified and valid credentials are passed', done => {
 					chai.request('http://localhost:4000')
 					.delete(`/api/users/${newUserId}`)
 					.set('authorization', ADMIN_SECRET_KEY)

@@ -1,5 +1,11 @@
 const R = require('ramda')
-const { standardRes, trimValue, validateEditableUserData, validateRequiredUserData, authorizeRequest } = require('../../utils/utility')
+const { 
+	standardRes, 
+	trimValue, 
+	validateEditableUserData, 
+	validateRequiredUserData, 
+	authorizeRequest 
+} = require('../../utils/utility')
 const { requiredUserProperties } = require('../../constants/user')
 
 module.exports = (app, knex) => {
@@ -43,7 +49,7 @@ module.exports = (app, knex) => {
 		}
 		
 		try{	
-			const user = await knex('users').insert(data).returning('*')
+			const user = await knex('users').insert(R.assoc('updated_at', knex.fn.now(), data)).returning('*')
 			res.send(standardRes({user_id: user[0]}))
 		} catch(err){
 			res.send(standardRes([], `An error occurred when creating this user : ${err}`, true))

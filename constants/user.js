@@ -1,4 +1,8 @@
+const R = require('ramda')
+
+const editableUserProperties = ['first_name', 'last_name']
+
 module.exports = {
-	editableUserProperties : ['first_name', 'last_name'],
-	requiredUserProperties : ['first_name', 'last_name', 'email']
+	editableUserProperties,
+	requiredUserProperties : R.insertAll(editableUserProperties.length, ['email'], editableUserProperties)
 }
