@@ -31,7 +31,6 @@ module.exports = (app, knex) => {
 		requireUserOrGeneralAuthorization,
 		async (req, res) => {
 			const { userId, noteId } = req.params
-
 			try{
 				const note = await knex('notes').select().where({id: noteId, user_id: userId})
 				if(!note.length) return res.send(standardRes([], `An error occurred when retrieving this note: a note with id ${id} on user with id ${userId} does not exist`, true))
