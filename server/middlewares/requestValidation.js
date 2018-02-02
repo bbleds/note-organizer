@@ -47,8 +47,11 @@ const validateUserAndNoteIds = async (req, res, next) => {
 
 // checks that a record exists in the users table with a particular id
 const validateUserId = async(req, res, next) => {
+
+	const id = req.params.userId || req.params.id
+
 	try{
-		const user = await knex.select().from('users').where('id','=',req.params.id)
+		const user = await knex.select().from('users').where('id','=',id)
 		if (!user.length) return res.send(standardRes([], `An error occurred when retrieving this user : User with id: ${id} does not exist`, true))
 	} catch(err){
 		res.send(standardRes([], `An error occurred when updating this user : ${err}`, true))

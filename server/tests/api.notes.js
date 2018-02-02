@@ -7,7 +7,7 @@ const { ADMIN_SECRET_KEY } = require('../../config')
 chai.use(chaiHttp)
 
 describe('/api/notes endpoints', () => {
-	
+
 	// create a promise for creating a new user
 	const noteCreation = new Promise((resolve, reject) => {
 		// create new note
@@ -49,10 +49,10 @@ describe('/api/notes endpoints', () => {
 			})
 		})
 	})
-	
+
 	noteCreation
 	.then((newNoteId) => {
-		
+
 		// get all notes
 		describe('GET /api/notes - Get All Notes', () => {
 			it('should not get notes when invalid credentials are passed in', done => {
@@ -82,8 +82,38 @@ describe('/api/notes endpoints', () => {
 				})
 			})
 		})
-		
-		// get note
+
+		// get all user notes
+		describe("GET /api/users/:userId/notes - Get user's Notes", () => {
+			it('should not retrieve notes when invalid credentials are passed in', done => {
+				chai.request('http://localhost:4000')
+				.get(`/api/users/1/notes`)
+				.set('authorization', 'testing')
+				.end((err, res) => {
+					expect(res.body.error).to.equal(true)
+					done()
+				})
+			})
+			it('should not retrieve notes when no credentials are passed in', done => {
+				chai.request('http://localhost:4000')
+				.get(`/api/users/1/notes`)
+				.end((err, res) => {
+					expect(res.body.error).to.equal(true)
+					done()
+				})
+			})
+			it('should retrieve a single note when valid credentials are passed in', done => {
+				chai.request('http://localhost:4000')
+				.get(`/api/users/1/notes`)
+				.set('authorization', ADMIN_SECRET_KEY)
+				.end((err, res) => {
+					expect(res.body.error).to.equal(false)
+					done()
+				})
+			})
+		})
+
+		// get single note
 		describe('GET /api/users/:userId/notes/:noteId - Get Single Note', () => {
 			it('should not retrieve a single note when invalid credentials are passed in', done => {
 				chai.request('http://localhost:4000')
@@ -105,7 +135,7 @@ describe('/api/notes endpoints', () => {
 				})
 			})
 		})
-		
+
 		// edit note
 		describe('POST /api/users/:id/notes/noteId - Edit Note', () => {
 			it('should not edit a note when invalid credentials are passed in', done => {
@@ -157,7 +187,7 @@ describe('/api/notes endpoints', () => {
 				})
 			})
 		})
-		
+
 		// delete note
 		describe('DELETE /api/users/:userId/notes/:noteId - Delete Single Note', () => {
 			it('should not delete a note when invalid credentials are passed in', done => {
@@ -197,7 +227,7 @@ describe('/api/notes endpoints', () => {
 				})
 			})
 		})
-		
+
 	})
 	.catch((err) => {
 		describe('Error: failed note creation', () => {

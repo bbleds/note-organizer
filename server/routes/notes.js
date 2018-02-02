@@ -10,7 +10,8 @@ const {
 	requireGeneralAuthorization,
 	requireUserOrGeneralAuthorization,
 	validateRequestBody,
-	validateUserAndNoteIds
+	validateUserAndNoteIds,
+	validateUserId
 } = require('../middlewares/requestValidation')
 
 module.exports = (app, knex) => {
@@ -23,6 +24,19 @@ module.exports = (app, knex) => {
 				res.send(standardRes(await knex('notes').select()))
 			} catch(err){
 				res.send(standardRes([], `An error occurred when retrieving notes: ${err}`, true))
+			}
+	})
+
+	// get all notes for a user
+	app.get('/api/users/:userId/notes',
+		validateUserId,
+		requireUserOrGeneralAuthorization,
+		async (req, res) => {
+			try{
+				const notes = await knex('notes').select().where({user_id: req.params.userId})
+				res.send(standardRes(notes))
+			} catch(err){
+				res.send(standardRes([], `An error occurred when retrieving a note: ${err}`, true))
 			}
 	})
 

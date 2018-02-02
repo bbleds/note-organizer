@@ -80,7 +80,7 @@ module.exports = (app, knex) => {
 			if (R.isEmpty(data)) return res.send(standardRes([], 'An error occurred: there were no valid user values provided. Please check your values and try again', true))
 
 			try {
-				await knex('users').update(data).where('id','=',req.params.id)
+				await knex('users').update(R.merge({updated_at:knex.fn.now()},data)).where('id','=',req.params.id)
 				res.send(standardRes(data, 'User updated successfully. NOTE - some properties may have been removed if invalid keys were specified'))
 			} catch(err) {
 				res.send(standardRes([], `An error occurred when updating this user : ${err}`, true))
