@@ -83,7 +83,7 @@ describe('/api/notes endpoints', () => {
 			})
 		})
 
-		// get all user notes
+		// get user notes
 		describe("GET /api/users/:userId/notes - Get user's Notes", () => {
 			it('should not retrieve notes when invalid credentials are passed in', done => {
 				chai.request('http://localhost:4000')
@@ -108,6 +108,34 @@ describe('/api/notes endpoints', () => {
 				.set('authorization', ADMIN_SECRET_KEY)
 				.end((err, res) => {
 					expect(res.body.error).to.equal(false)
+					done()
+				})
+			})
+			it('should allow the user to specify an orderby key', done => {
+				chai.request('http://localhost:4000')
+				.get(`/api/users/1/notes?orderby=title`)
+				.set('authorization', ADMIN_SECRET_KEY)
+				.end((err, res) => {
+					expect(res.body.error).to.equal(false)
+					done()
+				})
+			})
+			it('should allow the user to specify an orderby key and direction', done => {
+				chai.request('http://localhost:4000')
+				.get(`/api/users/1/notes?orderby=title&dir=asc`)
+				.set('authorization', ADMIN_SECRET_KEY)
+				.end((err, res) => {
+					expect(res.body.error).to.equal(false)
+					done()
+				})
+			})
+			it('should allow the user to specify a limit', done => {
+				chai.request('http://localhost:4000')
+				.get(`/api/users/1/notes?limit=1`)
+				.set('authorization', ADMIN_SECRET_KEY)
+				.end((err, res) => {
+					expect(res.body.error).to.equal(false)
+					expect(res.body.data.length).to.equal(1)
 					done()
 				})
 			})

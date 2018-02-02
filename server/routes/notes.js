@@ -40,7 +40,7 @@ module.exports = (app, knex) => {
 
 			const LIMIT = limit ? `LIMIT ${req.query.limit}` : ''
 			const ORDER_BY = orderby &&  accessibleApiFields.includes(req.query.orderby.toLowerCase()) ? `ORDER BY ${req.query.orderby.toLowerCase()}` : ''
-			const DIRECTION = dir && queryDirections.includes(req.query.dir.toUpperCase()) ? req.query.dir.toUpperCase() : ''
+			const DIRECTION = orderby && dir && queryDirections.includes(req.query.dir.toUpperCase()) ? req.query.dir.toUpperCase() : ''
 			const query = `
 				SELECT *
 				FROM notes
