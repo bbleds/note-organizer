@@ -1,5 +1,9 @@
 const R = require('ramda')
-const { requiredNoteProperties } = require('../../constants/notes')
+const {
+	requiredNoteProperties,
+	accessibleApiFields,
+	queryDirections
+} = require('../../constants')
 const {
 	authorizeRequest,
 	standardRes,
@@ -32,9 +36,22 @@ module.exports = (app, knex) => {
 		validateUserId,
 		requireUserOrGeneralAuthorization,
 		async (req, res) => {
+			const { limit, orderby, dir } = req.query
+
+			const LIMIT = limit ? `LIMIT ${req.query.limit}` : ''
+			const ORDER_BY = orderby &&  accessibleApiFields.includes(req.query.orderby.toLowerCase()) ? `ORDER BY ${req.query.orderby.toLowerCase()}` : ''
+			const DIRECTION = dir && queryDirections.includes(req.query.dir.toUpperCase()) ? req.query.dir.toUpperCase() : ''
+			const query = `
+				SELECT *
+				FROM notes
+				WHERE user_id = ${req.params.userId}
+				${ ORDER_BY } ${ DIRECTION }
+				${LIMIT}
+				`
+
 			try{
-				const notes = await knex('notes').select().where({user_id: req.params.userId})
-				res.send(standardRes(notes))
+				const notes = await knex.raw(query)
+				res.send(standardRes(notes[0]))
 			} catch(err){
 				res.send(standardRes([], `An error occurred when retrieving a note: ${err}`, true))
 			}

@@ -3,6 +3,8 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { Redirect } from 'react-router-dom'
 import actions from '../actions'
+import Searchbar from '../components/Searchbar'
+import RecentNotes from '../components/RecentNotes'
 
 class Dashboard extends Component{
 	render(){
@@ -21,17 +23,8 @@ class Dashboard extends Component{
 										''
 									}
 									<h1>Welcome, {user.first_name}</h1>
-									<div className="row">
-										<div className="col s12">
-											<div className="row">
-												<div className="input-field col s12">
-													<i className="material-icons prefix">search</i>
-													<input type="text" id="autocomplete-input" className="autocomplete"/>
-													<label for="autocomplete-input">Search my notes...</label>
-												</div>
-											</div>
-										</div>
-									</div>
+									<Searchbar/>
+									<RecentNotes/>
 							</div>)
 				}
 			</div>
