@@ -9,7 +9,7 @@ export default class Header extends Component{
     let content
     switch (user){
       case false:
-        content = (<li><a href="/auth/google">Login with Google</a></li>)
+        content = (<li><a href="/api/auth/google">Login with Google</a></li>)
         break
       case null:
         content = (
@@ -27,7 +27,7 @@ export default class Header extends Component{
         )
         break
       default:
-        content = (<li><a href="/api/logout">Logout</a></li>)
+        content = (<li><a href="/api/auth/logout">Logout</a></li>)
         break
     }
 

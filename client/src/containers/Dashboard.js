@@ -6,13 +6,34 @@ import actions from '../actions'
 
 class Dashboard extends Component{
 	render(){
-		const content = this.props.user === false ?
-			(<Redirect to="/" />) :
-			(<h1>Dashboard</h1>)
+
+		const { user } = this.props
+
 
 		return(
 			<div>
-				{content}
+				{
+					user === false ? (<Redirect to="/" />) :
+						user === null ? (<div>Loading application</div>) :
+							(<div>
+									{
+										user.profile_img_url ? <img src={user.profile_img_url} />	:
+										''
+									}
+									<h1>Welcome, {user.first_name}</h1>
+									<div className="row">
+										<div className="col s12">
+											<div className="row">
+												<div className="input-field col s12">
+													<i className="material-icons prefix">search</i>
+													<input type="text" id="autocomplete-input" className="autocomplete"/>
+													<label for="autocomplete-input">Search my notes...</label>
+												</div>
+											</div>
+										</div>
+									</div>
+							</div>)
+				}
 			</div>
 		)
 	}

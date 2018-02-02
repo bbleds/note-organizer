@@ -36,23 +36,24 @@ module.exports = (app, knex) => {
 	      try {
 	        // if no existing user is found, we should create one and then continue auth flow
 					const existingUser = await knex('users').select().where({google_id: profile.id})
-					
+
 					if( existingUser.length ) return done(null, existingUser[0])
 					// console.log('made it here after', profile);
 					const newUserCreationResp = await knex('users').insert({
-						first_name : profile.name.familyName,
-						last_name: profile.name.givenName,
+						first_name : profile.name.givenName,
+						last_name: profile.name.familyName,
 						google_id: profile.id,
 						raw_google_api_response: profile._raw,
 						profile_img_url: profile.photos[0] ? profile.photos[0].value.split('?')[0] : null
 					})
-					console.log('new user', newUserCreationResp);
+
 					const newUser = await knex('users').select().where({id:newUserCreationResp[0]})
 
 					done(null, newUser[0])
 	      }
 	      catch(error) {
 	        console.log('an error occurred during auth', error)
+					done(null, false)
 	      }
 	}))
 }

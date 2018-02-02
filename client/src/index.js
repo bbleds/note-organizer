@@ -6,6 +6,7 @@ import configureStore from './store/configureStore'
 import App from './containers/App.js'
 import reducers from './reducers'
 import 'materialize-css/dist/css/materialize.min.css'
+import 'materialize-css/dist/js/materialize.min.js'
 
 const store = configureStore({})
 
